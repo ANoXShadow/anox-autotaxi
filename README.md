@@ -1,6 +1,6 @@
 # 🚖 anox-autotaxi
 
-![anox-autotaxi]([https://github.com/user-attachments/assets/0e14edb6-7425-4eed-99d3-dfc2053cc4b7))
+![anox-autotaxi]([https://github.com/user-attachments/assets/0e14edb6-7425-4eed-99d3-dfc2053cc4b7)
 
 
 ## ✨ Overview
