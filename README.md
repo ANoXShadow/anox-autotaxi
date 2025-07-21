@@ -6,8 +6,8 @@
 ## ✨ Overview
 > **anox-autotaxi** is an automated taxi system that spawns taxis for players. Players can call taxis, set destinations, and enjoy realistic transportation with dynamic pricing and smart navigation.
 
-- [Preview](https://www.youtube.com/your-preview-link)  
-- [Docs](https://anoxstudios.gitbook.io/anoxstudios/free-scripts/anox-autotaxi)  
+- [Preview](https://www.youtube.com/watch?v=WN-2BnpA1Wk)  
+- [Docs](https://anoxstudios.gitbook.io/anoxstudios/free-scripts/auto-services/anox-autotaxi)  
 - [Discord](https://discord.gg/gbJ5SyBJBv)
 
 ---
