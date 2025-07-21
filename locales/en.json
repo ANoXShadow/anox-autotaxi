@@ -1,0 +1,37 @@
+{
+  "notifications": {
+    "taxi_called": "Taxi called! It's on the way.",
+    "taxi_arrived": "Your taxi has arrived!",
+    "trip_complete": "Trip complete! Total cost: $%s",
+    "stuck_message": "Taxi appears stuck, attempting to reroute...",
+    "unreachable_location": "Warning: Destination may not be directly accessible by road.",
+    "left_taxi_early": "You left the taxi early! Partial fare charged.",
+    "enter_back_seat": "Please enter the back seat of the taxi!",
+    "mark_destination": "Mark your destination on the map to start your trip.",
+    "estimated_fare": "Estimated fare: $%s",
+    "insufficient_funds": "You don't have enough money for this trip!",
+    "on_cooldown": "Please wait %s seconds before calling another taxi.",
+    "max_taxis_reached": "Maximum number of taxis already active. Please try again later.",
+    "taxi_cancelled": "Taxi cancelled.",
+    "already_have_taxi": "You already have an active taxi!",
+    "cannot_call_here": "Cannot call taxi from this location!",
+    "no_spawn_location": "Cannot find suitable spawn location!",
+    "failed_to_spawn": "Failed to spawn taxi!",
+    "cannot_cancel_during_trip": "Cannot cancel during trip!",
+    "mark_different_destination": "Mark a different destination on the map.",
+    "payment_successful": "Payment successful!",
+    "partial_fare_paid": "Partial fare paid for early exit: $%s",
+    "payment_failed": "Payment failed! You have been returned to pickup location.",
+    "teleported_back": "Insufficient funds! Teleported back to pickup location."
+  },
+  "dialogs": {
+    "confirm_destination_header": "Confirm Destination",
+    "confirm_destination_content": "Proceed to marked destination?",
+    "confirm_destination_with_fare": "Proceed to marked destination?\n\n%s",
+    "confirm_yes": "Yes",
+    "confirm_no": "No"
+  },
+  "ui": {
+    "trip_cost_distance": "Trip Cost: $%s | Distance: %.2f km"
+  }
+}
