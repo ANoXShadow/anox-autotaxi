@@ -530,3 +530,162 @@ AddEventHandler('onResourceStart', function(resourceName)
         HideTaxiTextUI()
     end
 end)
+
+local phoneModels = { "p_phonebox_03", "p_phonebox_02_s", "prop_phonebox_04", "prop_phonebox_01a", "prop_phonebox_02" } 
+local phoneModelHashes = {} for _, name in ipairs(phoneModels) do
+    phoneModelHashes[#phoneModelHashes+1] = joaat(name)
+end
+
+local phoneOptionsOx = {
+    name = "phone_interaction",
+    icon = "fas fa-phone",
+    label = "Use Phone",
+    distance = 2.5,
+    canInteract = function(entity, distance, coords, name)
+        return not IsPedInAnyVehicle(PlayerPedId(), true)
+    end,
+    onSelect = function(data)
+        lib.registerContext({
+            id = 'call_menu',
+            title = 'Who would you like to call?',
+            options = {
+                {
+                    title = 'Taxi',
+                    description = 'Call a taxi service',
+                    icon = 'fa-solid fa-taxi',
+                    onSelect = function()
+                        if cooldownTime > GetGameTimer() then
+                            local remaining = math.ceil((cooldownTime - GetGameTimer()) / 1000)
+                            Bridge.Notify(nil, 'Auto Taxi', _L('notifications.on_cooldown', remaining), 'error')
+                            return
+                        end
+                        if activeTaxi and DoesEntityExist(activeTaxi) then
+                            Bridge.Notify(nil, 'Auto Taxi', _L('notifications.already_have_taxi'), 'error')
+                            return
+                        end
+                        cooldownTime = GetGameTimer() + (Config.Cooldown.CommandCooldown * 1000)
+                        lib.callback('anox-autotaxi:server:requestTaxi', false, function(canSpawn)
+                            if not canSpawn then
+                                Bridge.Notify(nil, 'Auto Taxi', _L('notifications.max_taxis_reached'), 'error')
+                                return
+                            end
+                            local playerCoords = GetEntityCoords(PlayerPedId())
+                            if IsInBlacklistedArea(playerCoords) then
+                                Bridge.Notify(nil, 'Auto Taxi', _L('notifications.cannot_call_here'), 'error')
+                                lib.callback('anox-autotaxi:server:taxiFailed', false, function() end)
+                                return
+                            end
+                            local spawnPoint = FindSafeSpawnPoint(playerCoords)
+                            if not spawnPoint then
+                                Bridge.Notify(nil, 'Auto Taxi', _L('notifications.no_spawn_location'), 'error')
+                                lib.callback('anox-autotaxi:server:taxiFailed', false, function() end)
+                                return
+                            end
+                            if SpawnTaxi(spawnPoint) then
+                                Bridge.Notify(nil, 'Auto Taxi', _L('notifications.taxi_called'), 'success')
+                                awaitingDestination = true
+                                pickupLocation = playerCoords
+                                CreateThread(function()
+                                    while activeTaxi and DoesEntityExist(activeTaxi) and not isInTaxi do
+                                        Wait(1000)
+                                        if #(playerCoords - GetEntityCoords(activeTaxi)) < 20.0 then
+                                            Bridge.Notify(nil, 'Auto Taxi', _L('notifications.taxi_arrived'), 'success')
+                                            break
+                                        end
+                                    end
+                                end)
+                            else
+                                Bridge.Notify(nil, 'Auto Taxi', _L('notifications.failed_to_spawn'), 'error')
+                                lib.callback('anox-autotaxi:server:taxiFailed', false, function() end)
+                            end
+                        end)
+                    end, false}
+                }})
+                lib.showContext('call_menu')
+            end
+}
+
+local phoneOptionsQB = {
+    options = {
+        {
+            name = "phone_interaction",
+            icon = "fas fa-phone",
+            label = "Use Phone",
+            action = function(entity)
+                lib.registerContext({
+                    id = 'call_menu',
+                    title = 'Who would you like to call?',
+                    options = {
+                        {
+                            title = 'Taxi',
+                            description = 'Call a taxi service',
+                            icon = 'fa-solid fa-taxi',
+                            onSelect = function()
+                                if cooldownTime > GetGameTimer() then
+                                    local remaining = math.ceil((cooldownTime - GetGameTimer()) / 1000)
+                                    Bridge.Notify(nil, 'Auto Taxi', _L('notifications.on_cooldown', remaining), 'error')
+                                    return
+                                end
+                                if activeTaxi and DoesEntityExist(activeTaxi) then
+                                    Bridge.Notify(nil, 'Auto Taxi', _L('notifications.already_have_taxi'), 'error')
+                                    return
+                                end
+                                cooldownTime = GetGameTimer() + (Config.Cooldown.CommandCooldown * 1000)
+                                lib.callback('anox-autotaxi:server:requestTaxi', false, function(canSpawn)
+                                    if not canSpawn then
+                                        Bridge.Notify(nil, 'Auto Taxi', _L('notifications.max_taxis_reached'), 'error')
+                                        return
+                                    end
+                                    local playerCoords = GetEntityCoords(PlayerPedId())
+                                    if IsInBlacklistedArea(playerCoords) then
+                                        Bridge.Notify(nil, 'Auto Taxi', _L('notifications.cannot_call_here'), 'error')
+                                        lib.callback('anox-autotaxi:server:taxiFailed', false, function() end)
+                                        return
+                                    end
+                                    local spawnPoint = FindSafeSpawnPoint(playerCoords)
+                                    if not spawnPoint then
+                                        Bridge.Notify(nil, 'Auto Taxi', _L('notifications.no_spawn_location'), 'error')
+                                        lib.callback('anox-autotaxi:server:taxiFailed', false, function() end)
+                                        return
+                                    end
+                                    if SpawnTaxi(spawnPoint) then
+                                        Bridge.Notify(nil, 'Auto Taxi', _L('notifications.taxi_called'), 'success')
+                                        awaitingDestination = true
+                                        pickupLocation = playerCoords
+                                        CreateThread(function()
+                                            while activeTaxi and DoesEntityExist(activeTaxi) and not isInTaxi do
+                                                Wait(1000)
+                                                if #(playerCoords - GetEntityCoords(activeTaxi)) < 20.0 then
+                                                    Bridge.Notify(nil, 'Auto Taxi', _L('notifications.taxi_arrived'), 'success')
+                                                    break
+                                                end
+                                            end
+                                        end)
+                                    else
+                                        Bridge.Notify(nil, 'Auto Taxi', _L('notifications.failed_to_spawn'), 'error')
+                                        lib.callback('anox-autotaxi:server:taxiFailed', false, function() end)
+                                    end
+                                end)
+                            end
+                        }
+                    }
+                })
+                lib.showContext('call_menu')
+            end,
+            canInteract = function(entity, distance, data)
+                return not IsPedInAnyVehicle(PlayerPedId(), true)
+            end
+        }
+    },
+    distance = 2.5
+}
+
+CreateThread(function()
+if Config.target == "ox" then
+    while GetResourceState('ox_target') ~= 'started' do Wait(100) end
+    exports.ox_target:addModel(phoneModels, phoneOptionsOx)
+elseif Config.target == "qb" then
+        while GetResourceState('qb-target') ~= 'started' do Wait(100) end
+        exports['qb-target']:AddTargetModel(phoneModels, phoneOptionsQB)
+    end
+end)
