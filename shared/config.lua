@@ -19,6 +19,8 @@ Config.UISystem = {
     AlertDialog = 'ox',      -- 'ox'
 }
 
+Config.target = 'ox'
+
 Config.Taxi = {
     MaxActiveTaxis = 5,                      
     Models = {                               
